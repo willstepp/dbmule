@@ -3,6 +3,8 @@ require "rails/generators"
 module StandaloneMigrations
   class Generator
     def self.migration(name, options="")
+      puts "Creating migration"
+
       generator_params = [name] + options.split(" ")
 
       migration_path = Rails.root.join("db/migrate")
@@ -21,6 +23,8 @@ module StandaloneMigrations
       nmf = File.open(new_migration_file, "r") {|f| f.read}
       updated_nmf = inject_sql_execution_code_into_migration(nmf, filename, sql_scripts)
       File.open(new_migration_file, 'w') {|f| f.write(updated_nmf)}
+      
+      puts "Finished creating migration"
     end
 
     private
