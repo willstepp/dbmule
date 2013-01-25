@@ -59,18 +59,19 @@ module StandaloneMigrations
       length = (lti - ci)
       classname = nmf.slice(ci, length).strip
 
-      <<-eos
-        class #{classname} < ActiveRecord::Migration
-        def up
-          sql = File.open('#{sql_scripts[:up]}', 'r') {|f| f.read}
-          execute(sql)
-        end
-        
-        def down
-          sql = File.open('#{sql_scripts[:down]}', 'r') {|f| f.read}
-          execute(sql)
-        end
-      eos
+<<-eos
+class #{classname} < ActiveRecord::Migration
+  def up
+    sql = File.open('#{sql_scripts[:up]}', 'r') {|f| f.read}
+    execute(sql)
+  end
+
+  def down
+    sql = File.open('#{sql_scripts[:down]}', 'r') {|f| f.read}
+    execute(sql)
+  end
+end
+eos
     end
   end
 end
