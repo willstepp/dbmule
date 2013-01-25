@@ -1,6 +1,8 @@
 # these generators are backed by rails' generators
 require "rails/generators"
+
 module StandaloneMigrations
+
   class Generator
     def self.migration(name, options="")
       generator_params = [name] + options.split(" ")
@@ -9,27 +11,22 @@ module StandaloneMigrations
 
       old_files = Dir.glob(File.join(migration_path, "*"))
 
-      old_files.each do |of|
-        puts of
-      end
-
       Rails::Generators.invoke "active_record:migration", generator_params,
         :destination_root => Rails.root
       new_files = Dir.glob(File.join(migration_path, "*"))
 
-      new_files.each do |nf|
-        puts nf
-      end
-
       new_migration_file = get_new_migration_file(old_files, new_files)
-      filename = File.basename(new_migration_file, ".rb")
 
-      sql_scripts = create_sql_scripts(filename)
+      if new_migration_file
+        filename = File.basename(new_migration_file, ".rb")
 
-      #update migration file contents with sql execution code
-      nmf = File.open(new_migration_file, "r") {|f| f.read}
-      updated_nmf = inject_sql_execution_code_into_migration(nmf, filename, sql_scripts)
-      File.open(new_migration_file, 'w') {|f| f.write(updated_nmf)}
+        sql_scripts = create_sql_scripts(filename)
+
+        #update migration file contents with sql execution code
+        nmf = File.open(new_migration_file, "r") {|f| f.read}
+        updated_nmf = inject_sql_execution_code_into_migration(nmf, filename, sql_scripts)
+        File.open(new_migration_file, 'w') {|f| f.write(updated_nmf)}
+      end
     end
 
     private
@@ -78,8 +75,3 @@ module StandaloneMigrations
     end
   end
 end
-
-
-#1) Get path of newly created migration file after the migration has completed
-#2) Create two empty sql scripts in the sql directory with the same name
-#3) Modify the newly created migration file to load and execute the sql script
