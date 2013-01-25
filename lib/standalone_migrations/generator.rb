@@ -17,13 +17,13 @@ module StandaloneMigrations
       new_migration_file = get_new_migration_file(old_files, new_files)
       filename = File.basename(new_migration_file, ".rb")
 
-      sql_scripts = create_sql_scripts(filename, migration_path)
+      sql_scripts = create_sql_scripts(filename)
 
       #update migration file contents with sql execution code
       nmf = File.open(new_migration_file, "r") {|f| f.read}
       updated_nmf = inject_sql_execution_code_into_migration(nmf, filename, sql_scripts)
       File.open(new_migration_file, 'w') {|f| f.write(updated_nmf)}
-      
+
       puts "Finished creating migration"
     end
 
