@@ -3,16 +3,23 @@ require "rails/generators"
 module StandaloneMigrations
   class Generator
     def self.migration(name, options="")
-      puts "Creating migration"
-
       generator_params = [name] + options.split(" ")
 
       migration_path = Rails.root.join("db/migrate")
 
       old_files = Dir.glob(File.join(migration_path, "*"))
+
+      old_files.each do |of|
+        puts of
+      end
+
       Rails::Generators.invoke "active_record:migration", generator_params,
         :destination_root => Rails.root
       new_files = Dir.glob(File.join(migration_path, "*"))
+
+      new_files.each do |nf|
+        puts nf
+      end
 
       new_migration_file = get_new_migration_file(old_files, new_files)
       filename = File.basename(new_migration_file, ".rb")
@@ -23,17 +30,15 @@ module StandaloneMigrations
       nmf = File.open(new_migration_file, "r") {|f| f.read}
       updated_nmf = inject_sql_execution_code_into_migration(nmf, filename, sql_scripts)
       File.open(new_migration_file, 'w') {|f| f.write(updated_nmf)}
-
-      puts "Finished creating migration"
     end
 
     private
 
     def self.get_new_migration_file(old_files, new_files)
       nf = []
-      new_files.each do |of|
-        if !old_files.include? of
-          nf << of
+      new_files.each do |f|
+        if !old_files.include? f
+          nf << f
         end
       end
       nf.count > 0 ? nf.first : nil
