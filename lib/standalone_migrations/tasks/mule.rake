@@ -18,6 +18,7 @@ namespace :mule do
     paths.add "db/schema", :with => File.join(database, "db/schema.rb")
     paths.add "db/structure", :with => File.join(database, "db/structure.sql")
     paths.add "db", :with => File.join(database, "db")
+    ENV['DB_STRUCTURE'] = File.join(database, "db/structure.sql")
 
     puts paths
 
