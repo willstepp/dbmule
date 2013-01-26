@@ -1,26 +1,23 @@
 require File.expand_path("../../../standalone_migrations", __FILE__)
 
 namespace :mule do
-  task :migrate, :database do |t, args|
-    database = args[:database] || ENV[
-      'database']
+  task :migrate, :db do |t, args|
+    database = args[:db] || ENV[
+      'db']
 
-    unless database
+    unless db
       puts "Error: must provide name of database to migrate"
       puts "For example: rake #{t.name} db=my_cool_database"
       abort
     end
 
     paths = Rails.application.config.paths
-    paths.add "config/database", :with => File.join(database, "db/config.yml")
-    paths.add "db/migrate", :with => File.join(database, "db/migrate")
-    paths.add "db/seeds", :with => File.join(database, "db/seeds.rb")
-    paths.add "db/schema", :with => File.join(database, "db/schema.rb")
-    paths.add "db/structure", :with => File.join(database, "db/structure.sql")
-    paths.add "db", :with => File.join(database, "db")
-    ENV['DB_STRUCTURE'] = File.join(database, "db/structure.sql")
-
-    puts paths
+    paths.add "config/database", :with => File.join(db, "db/config.yml")
+    paths.add "db/migrate", :with => File.join(db, "db/migrate")
+    paths.add "db/seeds", :with => File.join(db, "db/seeds.rb")
+    paths.add "db/schema", :with => File.join(db, "db/schema.rb")
+    paths.add "db", :with => File.join(db, "db")
+    ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
 
     Rake::Task["db:migrate"].invoke
   end
@@ -29,6 +26,7 @@ namespace :mule do
   end
 
   task :rollback do
+    Rake::Task["db:rollback"].invoke
   end
 end
 
