@@ -5,9 +5,12 @@ module StandaloneMigrations
         Deprecations.new.call
         puts "inside StandaloneMigrations.configure"
         config_database_file = Configurator.new.config
-        puts config_database_file.to_yaml
+        migrate_database_file = Configurator.new.migrate_dir
+
         paths = Rails.application.config.paths
+        puts paths
         paths.add "config/database", :with => config_database_file
+        paths.add "db/migrate", :with => migrate_database_file
         puts paths
       end
 

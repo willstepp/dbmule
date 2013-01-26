@@ -3,7 +3,9 @@ require File.expand_path("../../../standalone_migrations", __FILE__)
 #StandaloneMigrations::Tasks.load_tasks
 namespace :db do
   task :migrate_it do
-    puts 'whazzup!'
+    paths = Rails.application.config.paths
+    paths.add "config/database", :with => "I modified you"
+    puts paths
   end
 
   task :migrate do
