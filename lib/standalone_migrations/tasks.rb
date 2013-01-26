@@ -3,19 +3,13 @@ module StandaloneMigrations
     class << self
       def configure
         Deprecations.new.call
-        puts "inside StandaloneMigrations.configure"
         config_database_file = Configurator.new.config
-        migrate_database_file = Configurator.new.migrate_dir
 
         paths = Rails.application.config.paths
-        puts paths
         paths.add "config/database", :with => config_database_file
-        paths.add "db/migrate", :with => migrate_database_file
-        puts paths
       end
 
       def load_tasks
-        puts 'hi, im in StandaloneMigrations.load_tasks'
         configure
 
         load "active_record/railties/databases.rake"
@@ -23,7 +17,7 @@ module StandaloneMigrations
         %w(
           connection
           environment
-          overrides
+          mule
           db/new_migration
         ).each do
           |task| load "standalone_migrations/tasks/#{task}.rake"

@@ -70,10 +70,7 @@ module StandaloneMigrations
       ".standalone_migrations"
     end
 
-    def load_from_file(defaults)
-      puts "inside Configurator.load_from_file"
-      puts defaults.to_yaml
-      
+    def load_from_file(defaults)   
       return nil unless File.exists? configuration_file
       config = YAML.load( IO.read(configuration_file) ) 
       {
