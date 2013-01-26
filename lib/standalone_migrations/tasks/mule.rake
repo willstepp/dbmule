@@ -1,7 +1,7 @@
 require File.expand_path("../../../standalone_migrations", __FILE__)
 
 namespace :mule do
-  task :migrate, :db |t, args|
+  task :migrate, :db do |t, args|
     db = args[:db]
 
     unless db
@@ -26,3 +26,5 @@ namespace :mule do
   task :rollback do
   end
 end
+
+#https://github.com/rails/rails/blob/master/activerecord/lib/active_record/railties/databases.rake
