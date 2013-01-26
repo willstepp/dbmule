@@ -9,6 +9,7 @@ module StandaloneMigrations
       end
 
       def load_tasks
+        puts 'hi, im in StandaloneMigrations.load_tasks'
         configure
 
         MinimalRailtieConfig.load_tasks
