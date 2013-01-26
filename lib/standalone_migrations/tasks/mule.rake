@@ -2,7 +2,8 @@ require File.expand_path("../../../standalone_migrations", __FILE__)
 
 namespace :mule do
   task :migrate, :database do |t, args|
-    database = args[:database]
+    database = args[:database] || ENV[
+      'database']
 
     unless database
       puts "Error: must provide name of database to migrate"
