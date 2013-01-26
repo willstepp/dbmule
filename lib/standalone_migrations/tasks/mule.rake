@@ -19,6 +19,9 @@ namespace :mule do
     paths.add "db", :with => File.join(db, "db")
     ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
 
+    #for use in configurator initialize
+    ENV["DB_NAME"] = db + "/"
+
     Rake::Task["db:migrate"].invoke
   end
 
@@ -64,6 +67,9 @@ namespace :mule do
     paths.add "db/schema", :with => File.join(db, "db/schema.rb")
     paths.add "db", :with => File.join(db, "db")
     ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
+
+    #for use in configurator initialize
+    ENV["DB_NAME"] = db + "/"
 
     Rake::Task["db:rollback"].invoke
   end

@@ -5,8 +5,8 @@ module StandaloneMigrations
         Deprecations.new.call
         config_database_file = Configurator.new.config
 
-        #paths = Rails.application.config.paths
-        #paths.add "config/database", :with => config_database_file
+        paths = Rails.application.config.paths
+        paths.add "config/database", :with => config_database_file
       end
 
       def load_tasks
