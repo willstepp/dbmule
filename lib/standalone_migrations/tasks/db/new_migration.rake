@@ -1,12 +1,12 @@
 namespace :db do
-  task :new_migration, :name, :db, :options do |t, args|
+  task :new_migration, :name, :database, :options do |t, args|
     name = args[:name] || ENV['name']
-    db = args[:db]
+    db = args[:database]
     options = args[:options] || ENV['options']
 
     unless db
       puts "Error: must provide name of database to generate migration for."
-      puts "For example: rake #{t.name} db=my_cool_database name=add_field_to_form"
+      puts "For example: rake #{t.name} database=my_cool_database name=add_field_to_form"
       abort
     end
     
@@ -17,9 +17,9 @@ namespace :db do
     end
     
     if options
-      StandaloneMigrations::Generator.migration name, db, options.gsub('/', ' ')
+      StandaloneMigrations::Generator.migration name, database, options.gsub('/', ' ')
     else
-      StandaloneMigrations::Generator.migration name, db
+      StandaloneMigrations::Generator.migration name, database
     end
   end
 end
