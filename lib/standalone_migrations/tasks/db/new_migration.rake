@@ -1,10 +1,11 @@
 namespace :db do
   task :new_migration, :name, :database, :options do |t, args|
     name = args[:name] || ENV['name']
-    db = args[:database]
+    database = args[:database] || ENV[
+      'database']
     options = args[:options] || ENV['options']
 
-    unless db
+    unless database
       puts "Error: must provide name of database to generate migration for."
       puts "For example: rake #{t.name} database=my_cool_database name=add_field_to_form"
       abort
