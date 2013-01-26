@@ -7,8 +7,8 @@ module StandaloneMigrations
         config_database_file = Configurator.new.config
         puts config_database_file.to_yaml
         paths = Rails.application.config.paths
-        puts paths.to_yaml
         paths.add "config/database", :with => config_database_file
+        puts paths
       end
 
       def load_tasks
