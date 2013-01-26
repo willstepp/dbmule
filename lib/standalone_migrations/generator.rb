@@ -4,15 +4,15 @@ require "rails/generators"
 module StandaloneMigrations
 
   class Generator
-    def self.migration(name, options="")
+    def self.migration(name, db, options="")
       generator_params = [name] + options.split(" ")
 
-      migration_path = Rails.root.join("db/migrate")
+      migration_path = Rails.root.join(db, "db/migrate")
 
       old_files = Dir.glob(File.join(migration_path, "*"))
 
       Rails::Generators.invoke "active_record:migration", generator_params,
-        :destination_root => Rails.root
+        :destination_root => Rails.root.join(db)
       new_files = Dir.glob(File.join(migration_path, "*"))
 
       new_migration_file = get_new_migration_file(old_files, new_files)
@@ -20,7 +20,7 @@ module StandaloneMigrations
       if new_migration_file
         filename = File.basename(new_migration_file, ".rb")
 
-        sql_scripts = create_sql_scripts(filename)
+        sql_scripts = create_sql_scripts(db, filename)
 
         #update migration file contents with sql execution code
         nmf = File.open(new_migration_file, "r") {|f| f.read}
@@ -41,8 +41,8 @@ module StandaloneMigrations
       nf.count > 0 ? nf.first : nil
     end
 
-    def self.create_sql_scripts(filename)
-      sql_path = Rails.root.join("db/sql")
+    def self.create_sql_scripts(db, filename)
+      sql_path = Rails.root.join(db, "db/sql")
       up_script = File.join(sql_path, "#{filename}_up.sql")
       down_script = File.join(sql_path, "#{filename}_down.sql")
 
