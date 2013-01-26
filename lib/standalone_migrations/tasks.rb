@@ -3,7 +3,9 @@ module StandaloneMigrations
     class << self
       def configure
         Deprecations.new.call
+        puts "inside StandaloneMigrations.configure"
         config_database_file = Configurator.new.config
+        puts config_database_file.to_yaml
         paths = Rails.application.config.paths
         paths.add "config/database", :with => config_database_file
       end
@@ -12,6 +14,7 @@ module StandaloneMigrations
         puts 'hi, im in StandaloneMigrations.load_tasks'
         configure
 
+        load "active_record/railties/databases.rake"
         MinimalRailtieConfig.load_tasks
         %w(
           connection
@@ -21,7 +24,6 @@ module StandaloneMigrations
         ).each do
           |task| load "standalone_migrations/tasks/#{task}.rake"
         end
-        load "active_record/railties/databases.rake"
       end
     end
   end
