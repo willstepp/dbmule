@@ -5,15 +5,10 @@ module StandaloneMigrations
   class InternalConfigurationsProxy
 
     def initialize(configurations)
-      puts "inside InternalConfigurationsProxy"
-      puts configurations.to_yaml
       @configurations = configurations
     end
 
     def on(config_key)
-      puts "inside InternalConfigurationsProxy"
-      puts config_key
-      puts @configurations[config_key]
       if @configurations[config_key] && block_given?
         @configurations[config_key] = yield(@configurations[config_key]) || @configurations[config_key]
       end
@@ -24,20 +19,16 @@ module StandaloneMigrations
 
   class Configurator
     def self.load_configurations
-      puts "inside Configurator.load_configurations"
       @standalone_configs ||= Configurator.new.config
       @environments_config ||= YAML.load(ERB.new(File.read(@standalone_configs)).result).with_indifferent_access
     end
 
     def self.environments_config
-      puts "inside Configurator.environments_config"
       proxy = InternalConfigurationsProxy.new(load_configurations)
       yield(proxy) if block_given?
     end
 
     def initialize(options = {})
-      puts "inside Configurator.initialize"
-      puts options.to_yaml
 
       defaults = {
         :config       => "db/config.yml",
@@ -67,12 +58,9 @@ module StandaloneMigrations
 
     def config_for_all
       Configurator.load_configurations.dup
-      puts "inside Configurator.config_for_all"
-      puts Configurator.load_configurations.dup
     end
 
     def config_for(environment)
-      puts "inside Configurator.config_for: #{environment}"
       config_for_all[environment]
     end
 

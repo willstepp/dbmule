@@ -4,7 +4,6 @@ require File.expand_path("../../../standalone_migrations", __FILE__)
 namespace :db do
   task :migrate_it do
     puts 'whazzup!'
-    StandaloneMigrations::Tasks.load_tasks
   end
 
   task :migrate do
