@@ -14,6 +14,9 @@ namespace :mule do
     paths = Rails.application.config.paths
     paths.add "config/database", :with => File.join(database, "db/config.yml")
     paths.add "db/migrate", :with => File.join(database, "db/migrate")
+    paths.add "db/seeds", :with => File.join(database, "db/seeds.rb")
+    paths.add "db/schema", :with => File.join(database, "db/schema.rb")
+    paths.add "db/structure", :with => File.join(database, "db/structure.sql")
     paths.add "db", :with => File.join(database, "db")
 
     puts paths
