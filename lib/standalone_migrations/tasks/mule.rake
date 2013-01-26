@@ -24,11 +24,11 @@ namespace :mule do
 
   task :new_migration, :name, :db, :options do |t, args|
     name = args[:name] || ENV['name']
-    database = args[:db] || ENV[
+    db = args[:db] || ENV[
       'db']
     options = args[:options] || ENV['options']
 
-    unless database
+    unless db
       puts "Error: must provide name of database to generate migration for."
       puts "For example: rake #{t.name} db=my_cool_database name=add_field_to_form"
       abort
