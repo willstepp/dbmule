@@ -1,7 +1,7 @@
 require File.expand_path("../../../standalone_migrations", __FILE__)
 
 namespace :mule do
-  
+
   task :migrate, :db do |t, args|
     db = args[:db] || ENV[
       'db']
@@ -15,7 +15,9 @@ namespace :mule do
     set_rails_config_for(db)
 
     Rake::Task["db:migrate"].invoke
+  end
 
+  namespace :migrate do
     task :up, :db do |t, args|
       db = args[:db] || ENV[
       'db']
@@ -145,7 +147,7 @@ namespace :mule do
     Rake::Task["db:redo"].invoke
   end
 
-  task :schema, :db do |t, args|
+  namespace :schema do
     task :load, :db do |t, args|
       db = args[:db] || ENV[
       'db']
@@ -215,6 +217,22 @@ namespace :mule do
 
     set_rails_config_for(db)
     Rake::Task["db:seed"].invoke
+  end
+
+  namespace :fixtures do
+    task :load, :db do |t, args|
+      db = args[:db] || ENV[
+      'db']
+
+      unless db
+        puts "Error: must provide name of database to rollback"
+        puts "For example: rake #{t.name} db=my_cool_database"
+        abort
+      end
+
+      set_rails_config_for(db)
+      Rake::Task["db:fixtures:load"].invoke
+    end
   end
 end
 
