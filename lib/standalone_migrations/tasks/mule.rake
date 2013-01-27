@@ -1,6 +1,7 @@
 require File.expand_path("../../../standalone_migrations", __FILE__)
 
-namespace :db do
+namespace :mule do
+  
   task :migrate, :db do |t, args|
     db = args[:db] || ENV[
       'db']
@@ -11,16 +12,7 @@ namespace :db do
       abort
     end
 
-    paths = Rails.application.config.paths
-    paths.add "config/database", :with => File.join(db, "db/config.yml")
-    paths.add "db/migrate", :with => File.join(db, "db/migrate")
-    paths.add "db/seeds", :with => File.join(db, "db/seeds.rb")
-    paths.add "db/schema", :with => File.join(db, "db/schema.rb")
-    paths.add "db", :with => File.join(db, "db")
-    ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
-
-    #for use in configurator initialize
-    ENV["DB_NAME"] = db + "/"
+    set_rails_config_for(db)
 
     Rake::Task["db:migrate"].invoke
 
@@ -34,13 +26,7 @@ namespace :db do
         abort
       end
 
-      paths = Rails.application.config.paths
-      paths.add "config/database", :with => File.join(db, "db/config.yml")
-      paths.add "db/migrate", :with => File.join(db, "db/migrate")
-      paths.add "db/seeds", :with => File.join(db, "db/seeds.rb")
-      paths.add "db/schema", :with => File.join(db, "db/schema.rb")
-      paths.add "db", :with => File.join(db, "db")
-      ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
+      set_rails_config_for(db)
 
       Rake::Task["db:migrate:up"].invoke
     end
@@ -55,13 +41,7 @@ namespace :db do
         abort
       end
 
-      paths = Rails.application.config.paths
-      paths.add "config/database", :with => File.join(db, "db/config.yml")
-      paths.add "db/migrate", :with => File.join(db, "db/migrate")
-      paths.add "db/seeds", :with => File.join(db, "db/seeds.rb")
-      paths.add "db/schema", :with => File.join(db, "db/schema.rb")
-      paths.add "db", :with => File.join(db, "db")
-      ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
+      set_rails_config_for(db)
 
       Rake::Task["db:migrate:down"].invoke
     end
@@ -84,6 +64,8 @@ namespace :db do
       puts "For example: rake #{t.name} name=add_field_to_form"
       abort
     end
+
+    set_rails_config_for(db)
     
     if options
       StandaloneMigrations::Generator.migration name, db, options.gsub('/', ' ')
@@ -102,19 +84,152 @@ namespace :db do
       abort
     end
 
-    paths = Rails.application.config.paths
-    paths.add "config/database", :with => File.join(db, "db/config.yml")
-    paths.add "db/migrate", :with => File.join(db, "db/migrate")
-    paths.add "db/seeds", :with => File.join(db, "db/seeds.rb")
-    paths.add "db/schema", :with => File.join(db, "db/schema.rb")
-    paths.add "db", :with => File.join(db, "db")
-    ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
-
-    #for use in configurator initialize
-    ENV["DB_NAME"] = db + "/"
+    set_rails_config_for(db)
 
     Rake::Task["db:rollback"].invoke
   end
+
+  task :create, :db do |t, args|
+    db = args[:db] || ENV[
+      'db']
+
+    unless db
+      puts "Error: must provide name of database to rollback"
+      puts "For example: rake #{t.name} db=my_cool_database"
+      abort
+    end
+
+    set_rails_config_for(db)
+    Rake::Task["db:create"].invoke
+  end
+
+  task :drop, :db do |t, args|
+    db = args[:db] || ENV[
+      'db']
+    
+    unless db
+      puts "Error: must provide name of database to rollback"
+      puts "For example: rake #{t.name} db=my_cool_database"
+      abort
+    end
+
+    set_rails_config_for(db)
+    Rake::Task["db:drop"].invoke
+  end
+
+  task :reset, :db do |t, args|
+    db = args[:db] || ENV[
+      'db']
+
+    unless db
+      puts "Error: must provide name of database to rollback"
+      puts "For example: rake #{t.name} db=my_cool_database"
+      abort
+    end
+
+    set_rails_config_for(db)
+    Rake::Task["db:reset"].invoke
+  end
+
+  task :redo, :db do |t, args|
+    db = args[:db] || ENV[
+      'db']
+
+    unless db
+      puts "Error: must provide name of database to rollback"
+      puts "For example: rake #{t.name} db=my_cool_database"
+      abort
+    end
+
+    set_rails_config_for(db)
+    Rake::Task["db:redo"].invoke
+  end
+
+  task :schema, :db do |t, args|
+    task :load, :db do |t, args|
+      db = args[:db] || ENV[
+      'db']
+
+      unless db
+        puts "Error: must provide name of database to rollback"
+        puts "For example: rake #{t.name} db=my_cool_database"
+        abort
+      end
+
+      set_rails_config_for(db)
+      Rake::Task["db:schema:load"].invoke
+    end
+
+    task :dump, :db do |t, args|
+      db = args[:db] || ENV[
+      'db']
+
+      unless db
+        puts "Error: must provide name of database to rollback"
+        puts "For example: rake #{t.name} db=my_cool_database"
+        abort
+      end
+
+      set_rails_config_for(db)
+      Rake::Task["db:schema:dump"].invoke
+    end
+  end
+
+  task :drop, :db do |t, args|
+    db = args[:db] || ENV[
+      'db']
+
+    unless db
+      puts "Error: must provide name of database to rollback"
+      puts "For example: rake #{t.name} db=my_cool_database"
+      abort
+    end
+
+    set_rails_config_for(db)
+    Rake::Task["db:drop"].invoke
+  end
+
+  task :setup, :db do |t, args|
+    db = args[:db] || ENV[
+      'db']
+
+    unless db
+      puts "Error: must provide name of database to rollback"
+      puts "For example: rake #{t.name} db=my_cool_database"
+      abort
+    end
+
+    set_rails_config_for(db)
+    Rake::Task["db:setup"].invoke
+  end
+
+  task :seed, :db do |t, args|
+    db = args[:db] || ENV[
+      'db']
+
+    unless db
+      puts "Error: must provide name of database to rollback"
+      puts "For example: rake #{t.name} db=my_cool_database"
+      abort
+    end
+
+    set_rails_config_for(db)
+    Rake::Task["db:seed"].invoke
+  end
+end
+
+
+def set_rails_config_for(database_name)
+  paths = Rails.application.config.paths
+  paths.add "config/database", :with => File.join(database_name, "db/config.yml")
+  paths.add "db/migrate", :with => File.join(database_name, "db/migrate")
+  paths.add "db/seeds", :with => File.join(database_name, "db/seeds.rb")
+  paths.add "db/schema", :with => File.join(database_name, "db/schema.rb")
+  paths.add "db", :with => File.join(database_name, "db")
+  ENV['DB_STRUCTURE'] = File.join(database_name, "db/structure.sql")
+
+  #for use in configurator initialize
+  ENV["DB_NAME"] = database_name + "/"
 end
 
 #https://github.com/rails/rails/blob/master/activerecord/lib/active_record/railties/databases.rake
