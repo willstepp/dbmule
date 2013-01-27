@@ -2,53 +2,6 @@ require File.expand_path("../../../standalone_migrations", __FILE__)
 
 namespace :mule do
 
-  task :migrate, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
-
-    unless db
-      puts "Error: must provide name of database to migrate"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
-    end
-
-    set_rails_config_for(db)
-
-    Rake::Task["db:migrate"].invoke
-  end
-
-  namespace :migrate do
-    task :up, :db do |t, args|
-      db = args[:db] || ENV[
-      'db']
-
-      unless db
-        puts "Error: must provide name of database to migrate"
-        puts "For example: rake #{t.name} db=my_cool_database"
-        abort
-      end
-
-      set_rails_config_for(db)
-
-      Rake::Task["db:migrate:up"].invoke
-    end
-
-    task :down, :db do |t, args|
-      db = args[:db] || ENV[
-      'db']
-
-      unless db
-        puts "Error: must provide name of database to migrate"
-        puts "For example: rake #{t.name} db=my_cool_database"
-        abort
-      end
-
-      set_rails_config_for(db)
-
-      Rake::Task["db:migrate:down"].invoke
-    end
-  end
-
   task :new_migration, :name, :db, :options do |t, args|
     name = args[:name] || ENV['name']
     db = args[:db] || ENV[
@@ -76,178 +29,121 @@ namespace :mule do
     end
   end
 
-  task :rollback, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
+  task :migrate, :db do |t, args|
+    invoke_task_for(args[:db] || ENV['db'], t, "db:migrate")
+  end
 
-    unless db
-      puts "Error: must provide name of database to rollback"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
+  namespace :migrate do
+    task :up, :db do |t, args|
+      invoke_task_for(args[:db] || ENV['db'], t, "db:migrate:up")
     end
 
-    set_rails_config_for(db)
+    task :down, :db do |t, args|
+      invoke_task_for(args[:db] || ENV['db'], t, "db:migrate:down")
+    end
 
-    Rake::Task["db:rollback"].invoke
+    task :redo, :db do |t, args|
+      invoke_task_for(args[:db] || ENV['db'], t, "db:migrate:redo")
+    end
+
+    task :reset, :db do |t, args|
+      invoke_task_for(args[:db] || ENV['db'], t, "db:migrate:reset")
+    end
+
+    task :status, :db do |t, args|
+      invoke_task_for(args[:db] || ENV['db'], t, "db:migrate:status")
+    end
+
+  end
+
+  task :rollback, :db do |t, args|
+    invoke_task_for(args[:db] || ENV['db'], t, "db:rollback")
   end
 
   task :create, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
-
-    unless db
-      puts "Error: must provide name of database to rollback"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
-    end
-
-    set_rails_config_for(db)
-    Rake::Task["db:create"].invoke
+    invoke_task_for(args[:db] || ENV['db'], t, "db:create")
   end
 
   task :drop, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
-    
-    unless db
-      puts "Error: must provide name of database to rollback"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
-    end
-
-    set_rails_config_for(db)
-    Rake::Task["db:drop"].invoke
+    invoke_task_for(args[:db] || ENV['db'], t, "db:drop")
   end
 
   task :reset, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
-
-    unless db
-      puts "Error: must provide name of database to rollback"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
-    end
-
-    set_rails_config_for(db)
-    Rake::Task["db:reset"].invoke
+    invoke_task_for(args[:db] || ENV['db'], t, "db:reset")
   end
 
   task :redo, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
-
-    unless db
-      puts "Error: must provide name of database to rollback"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
-    end
-
-    set_rails_config_for(db)
-    Rake::Task["db:redo"].invoke
+    invoke_task_for(args[:db] || ENV['db'], t, "db:redo")
   end
 
   namespace :schema do
-    task :load, :db do |t, args|
-      db = args[:db] || ENV[
-      'db']
-
-      unless db
-        puts "Error: must provide name of database to rollback"
-        puts "For example: rake #{t.name} db=my_cool_database"
-        abort
-      end
-
-      set_rails_config_for(db)
-      Rake::Task["db:schema:load"].invoke
+    task :dump, :db do |t, args|
+      invoke_task_for(args[:db] || ENV['db'], t, "db:schema:dump")
     end
 
+    task :load, :db do |t, args|
+      invoke_task_for(args[:db] || ENV['db'], t, "db:schema:load")
+    end
+  end
+
+  namespace :structure do
     task :dump, :db do |t, args|
-      db = args[:db] || ENV[
-      'db']
+      invoke_task_for(db = args[:db] || ENV['db'], t, "db:structure:dump")
+    end
 
-      unless db
-        puts "Error: must provide name of database to rollback"
-        puts "For example: rake #{t.name} db=my_cool_database"
-        abort
-      end
-
-      set_rails_config_for(db)
-      Rake::Task["db:schema:dump"].invoke
+    task :load, :db do |t, args|
+      invoke_task_for(db = args[:db] || ENV['db'], t, "db:structure:load")
     end
   end
 
   task :drop, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
-
-    unless db
-      puts "Error: must provide name of database to rollback"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
-    end
-
-    set_rails_config_for(db)
-    Rake::Task["db:drop"].invoke
+    invoke_task_for(db = args[:db] || ENV['db'], t, "db:drop")
   end
 
   task :setup, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
-
-    unless db
-      puts "Error: must provide name of database to rollback"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
-    end
-
-    set_rails_config_for(db)
-    Rake::Task["db:setup"].invoke
+    invoke_task_for(db = args[:db] || ENV['db'], t, "db:setup")
   end
 
   task :seed, :db do |t, args|
-    db = args[:db] || ENV[
-      'db']
-
-    unless db
-      puts "Error: must provide name of database to rollback"
-      puts "For example: rake #{t.name} db=my_cool_database"
-      abort
-    end
-
-    set_rails_config_for(db)
-    Rake::Task["db:seed"].invoke
+    invoke_task_for(db = args[:db] || ENV['db'], t, "db:seed")
   end
 
   namespace :fixtures do
     task :load, :db do |t, args|
-      db = args[:db] || ENV[
-      'db']
-
-      unless db
-        puts "Error: must provide name of database to rollback"
-        puts "For example: rake #{t.name} db=my_cool_database"
-        abort
-      end
-
-      set_rails_config_for(db)
-      Rake::Task["db:fixtures:load"].invoke
+      invoke_task_for(db = args[:db] || ENV['db'], t, "db:fixtures:load")
     end
+
+    task :identify, :db do |t, args|
+      invoke_task_for(db = args[:db] || ENV['db'], t, "db:fixtures:identify")
+    end
+  end
+
+  task :version, :db do |t, args|
+    invoke_task_for(db = args[:db] || ENV['db'], t, "db:version")
   end
 end
 
+def invoke_task_for(db, current_task, task_to_invoke)
+  unless db
+    puts "Error: must provide name of database"
+    puts "For example: rake #{current_task.name} db=my_cool_database"
+    abort
+  end
 
-def set_rails_config_for(database_name)
+  set_rails_config_for(db)
+  Rake::Task[task_to_invoke].invoke
+end
+
+def set_rails_config_for(db)
   paths = Rails.application.config.paths
-  paths.add "config/database", :with => File.join(database_name, "db/config.yml")
-  paths.add "db/migrate", :with => File.join(database_name, "db/migrate")
-  paths.add "db/seeds", :with => File.join(database_name, "db/seeds.rb")
-  paths.add "db/schema", :with => File.join(database_name, "db/schema.rb")
-  paths.add "db", :with => File.join(database_name, "db")
-  ENV['DB_STRUCTURE'] = File.join(database_name, "db/structure.sql")
+  paths.add "config/database", :with => File.join(db, "db/config.yml")
+  paths.add "db/migrate", :with => File.join(db, "db/migrate")
+  paths.add "db/seeds", :with => File.join(db, "db/seeds.rb")
+  paths.add "db/schema", :with => File.join(db, "db/schema.rb")
+  ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
 
   #for use in configurator initialize
-  ENV["DB_NAME"] = database_name + "/"
+  ENV["DB_NAME"] = db + "/"
 end
 
 #https://github.com/rails/rails/blob/master/activerecord/lib/active_record/railties/databases.rake
