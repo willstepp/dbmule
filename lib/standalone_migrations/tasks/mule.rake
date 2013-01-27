@@ -1,5 +1,8 @@
 require File.expand_path("../../../standalone_migrations", __FILE__)
 
+#these tasks reference rails migration tasks located here:
+#https://github.com/rails/rails/blob/master/activerecord/lib/active_record/railties/databases.rake
+
 namespace :mule do
 
   task :new_migration, :name, :db, :options do |t, args|
@@ -145,5 +148,3 @@ def set_rails_config_for(db)
   #for use in configurator initialize
   ENV["DB_NAME"] = db + "/"
 end
-
-#https://github.com/rails/rails/blob/master/activerecord/lib/active_record/railties/databases.rake
