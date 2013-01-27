@@ -36,8 +36,6 @@ module StandaloneMigrations
         :seeds        => "#{ENV["DB_NAME"]}db/seeds.rb",
         :schema       => "#{ENV["DB_NAME"]}db/schema.rb"
       }
-      puts "defaults, boy"
-      puts defaults
       @options = load_from_file(defaults.dup) || defaults.merge(options)
       ENV['SCHEMA'] = File.expand_path(schema)
     end
