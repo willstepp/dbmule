@@ -65,6 +65,7 @@ eos
       puts "Mule created directory: #{File.join(db, "db", "sql")}"
       config_file = File.join(db_dir, "config.yml")
       File.open(config_file, 'w') {|f| f.write(config_template(db))}
+      puts "Mule created file: #{File.join(db, "db", "config.yml")}"
 
       puts "Mule finished creating database project for #{db}"
     else
