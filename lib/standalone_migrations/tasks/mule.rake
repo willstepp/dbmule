@@ -143,7 +143,7 @@ def set_rails_config_for(db)
   paths.add "db/migrate", :with => File.join(db, "db/migrate")
   paths.add "db/seeds", :with => File.join(db, "db/seeds.rb")
   paths.add "db/schema", :with => File.join(db, "db/schema.rb")
-  ENV['DB_STRUCTURE'] = File.join(db, "db/structure.sql")
+  ENV['DB_STRUCTURE'] = File.join(db, "db/structure_#{ENV['RAILS_ENV']}.sql")
 
   #for use in configurator initialize
   ENV["DB_NAME"] = db + "/"
