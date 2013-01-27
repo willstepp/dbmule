@@ -1,14 +1,84 @@
 require File.expand_path("../../../standalone_migrations", __FILE__)
+require 'fileutils'
 
 #these tasks reference rails migration tasks located here:
 #https://github.com/rails/rails/blob/master/activerecord/lib/active_record/railties/databases.rake
 
 namespace :mule do
 
+  task :new_project, :db do |t, args|
+
+    def config_template(db)
+<<-eos
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: #{db}_development
+  pool: 5
+  username:
+  password:
+  host:
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: #{db}_test
+  pool: 5
+  username:
+  password:
+  host:
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: #{db}_production
+  pool: 5
+  username:
+  password:
+  host:
+eos
+    end
+
+    db = args[:db] || ENV['db']
+    unless db
+      puts "Error: must provide name of database to generate project for."
+      puts "For example: rake #{t.name} db=my_cool_database"
+      abort
+    end
+
+    project_dir = Rails.root.join(db)
+
+    exists = File.exists? project_dir
+    if !exists
+      puts "Mule started creating database project for #{db}"
+
+      FileUtils.mkdir(project_dir)
+      puts "Mule created directory: #{db}"
+      db_dir = File.join(project_dir, "db")
+      FileUtils.mkdir(db_dir)
+      puts "Mule created directory: #{File.join(db, "db")}"
+      migrate_dir = File.join(db_dir, "migrate")
+      FileUtils.mkdir(migrate_dir)
+      puts "Mule created directory: #{File.join(db, "db", "migrate")}"
+      sql_dir = File.join(db_dir, "sql")
+      FileUtils.mkdir(sql_dir)
+      puts "Mule created directory: #{File.join(db, "db", "sql")}"
+      config_file = File.join(db_dir, "config.yml")
+      File.open(config_file, 'w') {|f| f.write(config_template(db))}
+
+      puts "Mule finished creating database project for #{db}"
+    else
+      puts "This database project already exists. Please choose another name."
+      abort
+    end
+  end
+
+  task :enable_migrations_on_existing_database, :db do |t, args|
+  end
+
   task :new_migration, :name, :db, :options do |t, args|
     name = args[:name] || ENV['name']
-    db = args[:db] || ENV[
-      'db']
+    db = args[:db] || ENV['db']
     options = args[:options] || ENV['options']
 
     unless db
