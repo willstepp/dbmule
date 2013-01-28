@@ -12,31 +12,31 @@ namespace :mule do
     def config_template(db)
 <<-eos
 development:
-  adapter: postgresql
+  adapter: #{ActiveRecord::Base.connection_config["adapter"]}
   encoding: unicode
   database: #{db}_development
   pool: 5
   username:
   password:
-  host:
+  host: localhost
 
 test:
-  adapter: postgresql
+  adapter: #{ActiveRecord::Base.connection_config["adapter"]}
   encoding: unicode
   database: #{db}_test
   pool: 5
   username:
   password:
-  host:
+  host: localhost
 
 production:
-  adapter: postgresql
+  adapter: #{ActiveRecord::Base.connection_config["adapter"]}
   encoding: unicode
   database: #{db}_production
   pool: 5
-  username:
-  password:
-  host:
+  username: ENV['#{db.upcase}_USER']
+  password: ENV['#{db.upcase}_PSWD']
+  host: ENV['#{db.upcase}_HOST']
 eos
     end
 
