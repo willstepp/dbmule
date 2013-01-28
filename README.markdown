@@ -2,21 +2,25 @@
 
 ###What is it?
 
-Mule is a database migration tool (Ruby gem) based upon a stand-alone version of [Rails Migrations](http://guides.rubyonrails.org/migrations.html). It is customized to be used in environments with multiple existing databases and to use SQL scripts by default instead of Migrations DSL.
+Mule is a database migration tool based on a stand-alone version of [Rails Migrations](http://guides.rubyonrails.org/migrations.html). By default, Mule uses SQL scripts instead of Migrations DSL, so no Ruby code is required. It supports multi-database environments, including support for existing databases.
 
-You interact with Mule via a series of [Rake](http://rake.rubyforge.org/) commands which map almost 1:1 with Rails Migration commands, so if you are familiar with them you will be right at home. These commands give you a simple, but powerful toolset to manage database migrations across both development and production environments.
+You interact with Mule via a series of [Rake](http://rake.rubyforge.org/) commands which map nearly 1:1 to Rails Migration commands, so if you are familiar with them you will be right at home, but if not don't worry - it's really easy.
+
+These commands give you a simple, but powerful toolset which you can use to manage database migrations across both development and production environments.
 
 ###How do I use it?
 
-Install Ruby, RubyGems and a ruby-database driver (e.g. `gem install mysql`) then:
+####Installation
 
-    $ gem install standalone_migrations
+Install [Ruby](http://www.ruby-lang.org/en/downloads/), [RubyGems](https://rubygems.org/pages/download), and a ruby-database driver (e.g. `gem install pg`) then:
 
-Add to `Rakefile` in your projects base directory:
+    $ gem install dbmule
+
+Create a `Rakefile` in your project's base directory containing the following lines:
 
 ```ruby
-require 'standalone_migrations'
-StandaloneMigrations::Tasks.load_tasks
+require 'mule_migrations'
+MuleMigrations::Tasks.load_tasks
 ```
 
 Add database configuration to `db/config.yml` in your projects base directory e.g.:
