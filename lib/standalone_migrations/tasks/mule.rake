@@ -1,5 +1,6 @@
 require File.expand_path("../../../standalone_migrations", __FILE__)
 require 'fileutils'
+require 'yaml'
 
 #these tasks reference rails migration tasks located here:
 #https://github.com/rails/rails/blob/master/activerecord/lib/active_record/railties/databases.rake
@@ -118,7 +119,11 @@ eos
 
     #create drop database <db_name> and recreate to down call
       #write schema into generated up sql script
-    File.open(Rails.root.join(db, "db/sql/#{filename}_down.sql"), 'w') {|f| f.write("drop database #{db} cascade;\ncreate database #{db};")}
+      #read in database name from config.yml for the current RAILS_ENV
+
+    config = YAML.load_file(Rails.root.join(db, "db/config.yml"))
+    db_name = config[ENV['RAILS_ENV']]["database"]
+    File.open(Rails.root.join(db, "db/sql/#{filename}_down.sql"), 'w') {|f| f.write("drop database #{db_name} cascade;\ncreate database #{db_name};")}
 
     puts ""
     puts "Mule finished"
