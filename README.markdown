@@ -16,10 +16,9 @@ Before using Mule, you must set up a Ruby environment on your machine. Follow th
 
 Once you have both Ruby and RubyGems installed, you should install the Ruby database driver for whatever database you are using, for example:
 
-Postgres
+PostgreSQL
 
     $ gem install pg
-
 
 ####Installation
 
@@ -148,6 +147,8 @@ This command will run any migrations that have not been run on the database.
 ####Seed database:
 
     $ rake mule:seed db=foo_bar_database
+
+You can create arbitrary SQL files in the `foo_bar_database/db/seeds` directory and they will be executed with this command. Specify order by numbering your files. If you want the data to be removed at each call to `mule:seed`, then you need to add that logic.
 
 ####Retrieve database version:
 
