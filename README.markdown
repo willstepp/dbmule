@@ -92,3 +92,61 @@ This will add an initial database version to your database with the contents of 
 #### Create a migration:
 
     rake mule:new_migration db=cat_sex_database name=new_cat_sex_migration
+
+#### Migrate database to latest version:
+
+    rake mule:migrate db=cat_sex_database
+
+#### Migrate database to specific version (up or down depending on current version):
+
+    rake mule:migrate db=cat_sex_database VERSION=<specific_version_number>
+
+#### Run a specific migration:
+
+    rake mule:migrate:up db=cat_sex_database VERSION=<specific_version_number>
+
+or
+
+    rake mule:migrate:down db=cat_sex_database VERSION=<specific_version_number>
+
+#### Rollback database to previous version:
+
+    rake mule:rollback db=cat_sex_database
+
+#### Rollback database a certain number of steps:
+
+    rake mule:rollback db=cat_sex_database STEP=<how_many_rollbacks>
+
+#### Seed database:
+
+    rake mule:seed db=cat_sex_database
+
+#### Retrieve database version:
+
+    rake mule:version db=cat_sex_database
+
+#### Create database:
+
+    rake mule:create db=cat_sex_database
+
+#### Drop database:
+
+    rake mule:drop db=cat_sex_database
+
+#### Reset database:
+
+    rake mule:reset db=cat_sex_database
+
+#### Dump schema:
+
+    rake mule:structure:dump db=cat_sex_database
+
+#### Load schema:
+
+    rake mule:structure:load db=cat_sex_database
+
+### Notes for production:
+
+Mule has a safeguard system in place for any `config.yml` environment that contains the word 'production'. If you run any command that is typically destructive in nature (i.e. data could be lost), then it is required that you pass in an additional confirmation flag to the command...
+
+How to pass in environment variables...
