@@ -191,7 +191,7 @@ eos
 
     task :down, :db, :confirm do |t, args|
       if ENV['RAILS_ENV'] and ENV['RAILS_ENV'].include? "production"
-      ensure_confirmation(args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
+      ensure_confirmation(t, args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
     end
       invoke_task_for(args[:db] || ENV['db'], t, "db:migrate:down")
     end
@@ -202,7 +202,7 @@ eos
 
     task :reset, :db, :confirm do |t, args|
       if ENV['RAILS_ENV'] and ENV['RAILS_ENV'].include? "production"
-      ensure_confirmation(args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
+      ensure_confirmation(t, args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
     end
       invoke_task_for(args[:db] || ENV['db'], t, "db:migrate:reset")
     end
@@ -215,7 +215,7 @@ eos
 
   task :rollback, :db, :confirm do |t, args|
     if ENV['RAILS_ENV'] and ENV['RAILS_ENV'].include? "production"
-      ensure_confirmation(args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
+      ensure_confirmation(t, args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
     end
     invoke_task_for(args[:db] || ENV['db'], t, "db:rollback")
   end
@@ -226,14 +226,14 @@ eos
 
   task :drop, :db, :confirm do |t, args|
     if ENV['RAILS_ENV'] and ENV['RAILS_ENV'].include? "production"
-      ensure_confirmation(args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
+      ensure_confirmation(t, args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
     end
     invoke_task_for(args[:db] || ENV['db'], t, "db:drop")
   end
 
   task :reset, :db, :confirm do |t, args|
     if ENV['RAILS_ENV'] and ENV['RAILS_ENV'].include? "production"
-      ensure_confirmation(args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
+      ensure_confirmation(t, args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
     end
     invoke_task_for(args[:db] || ENV['db'], t, "db:reset")
   end
@@ -264,7 +264,7 @@ eos
 
   task :drop, :db, :confirm do |t, args|
     if ENV['RAILS_ENV'] and ENV['RAILS_ENV'].include? "production"
-      ensure_confirmation(args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
+      ensure_confirmation(t, args[:confirm] || ENV['confirm'], args[:db] || ENV['db'])
     end
     invoke_task_for(db = args[:db] || ENV['db'], t, "db:drop")
   end
@@ -317,7 +317,7 @@ def set_rails_config_for(db)
   ENV["DB_NAME"] = db + "/"
 end
 
-def ensure_confirmation(confirm, db)
+def ensure_confirmation(current_task, confirm, db)
   if !confirm.nil? and !db.nil?
     if confirm.downcase == db.downcase
       return true
@@ -325,7 +325,7 @@ def ensure_confirmation(confirm, db)
   end
   puts ""
   puts "Error: Mule requires a confirmation argument for destructive operations on the production environment"
-  puts "Usage: rake #{t.name} confirm=<database_name> ...other arguments"
+  puts "Usage: rake #{current_task.name} confirm=<database_name> ...other arguments"
   puts ""
   abort
 end
