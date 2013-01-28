@@ -35,11 +35,11 @@ rescue LoadError => e
   $stderr.puts "Install it with: sudo gem install jeweler"
 else
   Jeweler::Tasks.new do |gem|
-    gem.name = 'standalone_migrations'
-    gem.summary = "A thin wrapper to use Rails Migrations in non Rails projects"
-    gem.email = "thuss@gabrito.com"
-    gem.homepage = "http://github.com/thuss/standalone-migrations"
-    gem.authors = ["Todd Huss", "Michael Grosser"]
+    gem.name = 'dbmule'
+    gem.summary = "Mule is a database migration tool based upon a stand-alone version of Rails Migrations. It is customized to be used in environments with multiple existing databases and to use SQL scripts by default instead of Migrations DSL."
+    gem.email = "willstepp@gmail.com"
+    gem.homepage = "http://github.com/willstepp/db-mule"
+    gem.authors = ["Daniel Stepp"]
   end
 
   Jeweler::GemcutterTasks.new
