@@ -95,6 +95,18 @@ eos
     puts ""
     puts "Mule enabling migrations on existing database"
 
+    #create backup file of existing database schema
+    begin
+      Rake::Task["mule:structure:dump"].invoke(db)
+    rescue => e
+      #the above raises an exception in this scenario becuase it expects a
+      #schema_migrations table to exist, which it does not yet since there are 
+      #no migrations, but the dump completes successfully anyway, so we just
+      #catch it
+    end
+    
+    schema = Rails.root.join(db, "db/structure_#{ENV['RAILS_ENV']}.sql")
+
     #run mule:new_migration init_from_existing_schema
     migration_path = Rails.root.join(db, "db/migrate")
     old_files = Dir.glob(File.join(migration_path, "*"))
@@ -104,26 +116,12 @@ eos
     new_migration_file = StandaloneMigrations::Generator.get_new_migration_file(old_files, new_files)
     filename = File.basename(new_migration_file, ".rb")
 
-    #run mule:migrate to insert versioning table into database
+    #run the new empty migration in order to insert an initial version into database
     Rake::Task["mule:migrate"].invoke(db)
 
-    #create backup file of existing database schema
-    Rake::Task["mule:structure:dump"].invoke(db)
-    schema = Rails.root.join(db, "db/structure_#{ENV['RAILS_ENV']}.sql")
-
     #copy schema dump into generated sql up file
-      #read in schema from schema
-      #write schema into generated up sql script
     s = File.open(schema, "r") {|f| f.read}
     File.open(Rails.root.join(db, "db/sql/#{filename}_up.sql"), 'w') {|f| f.write(s)}
-
-    #create drop database <db_name> and recreate to down call
-      #write schema into generated up sql script
-      #read in database name from config.yml for the current RAILS_ENV
-
-    config = YAML.load_file(Rails.root.join(db, "db/config.yml"))
-    db_name = config[ENV['RAILS_ENV']]["database"]
-    File.open(Rails.root.join(db, "db/sql/#{filename}_down.sql"), 'w') {|f| f.write("drop database #{db_name} cascade;\ncreate database #{db_name};")}
 
     puts ""
     puts "Mule finished"
