@@ -12,7 +12,7 @@ namespace :mule do
     def config_template(db)
 <<-eos
 development:
-  adapter: #{ActiveRecord::Base.connection_config["adapter"]}
+  adapter: postgresql
   encoding: unicode
   database: #{db}_development
   pool: 5
@@ -21,7 +21,7 @@ development:
   host: localhost
 
 test:
-  adapter: #{ActiveRecord::Base.connection_config["adapter"]}
+  adapter: postgresql
   encoding: unicode
   database: #{db}_test
   pool: 5
@@ -30,7 +30,7 @@ test:
   host: localhost
 
 production:
-  adapter: #{ActiveRecord::Base.connection_config["adapter"]}
+  adapter: postgresql
   encoding: unicode
   database: #{db}_production
   pool: 5
