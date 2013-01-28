@@ -40,11 +40,11 @@ Installation is complete, you are now ready to begin using Mule.
 
 To begin, create a new database project. A database project represents one database in your system. You can do this with one command:
 
-    $ rake mule:new_project db=cat_sex_database
+    rake mule:new_project db=foo_bar_database
 
-Mule will then create a directory in your project's base directory called whatever you put in for `cat_sex_database` above. Inside it will create the basic Mule project structure, which looks like this:
+Mule will then create a directory in your project's base directory called whatever you put in for `foo_bar_database` above. Inside it will create the basic Mule project structure, which looks like this:
 
-    cat_sex_database/
+    foo_bar_database/
       db/
         migrate/
         sql/
@@ -52,12 +52,12 @@ Mule will then create a directory in your project's base directory called whatev
         config.yml
         seeds.rb
 
-After the project has been created, you will need to edit the `cat_sex_database\db\config.yml` file and enter the correct database connection information for each environment section you require (development, test, production below). You can create an arbitary number of environments, with any names you like:
+After the project has been created, you will need to edit the `foo_bar_database\db\config.yml` file and enter the correct database connection information for each environment section you require (development, test, production below). You can create an arbitary number of environments, with any names you like:
 
     development:
       adapter: postgresql
       encoding: unicode
-      database: cat_sex_database_development
+      database: foo_bar_database_development
       pool: 5
       username:
       password:
@@ -66,7 +66,7 @@ After the project has been created, you will need to edit the `cat_sex_database\
     test:
       adapter: postgresql
       encoding: unicode
-      database: cat_sex_database_test
+      database: foo_bar_database_test
       pool: 5
       username:
       password:
@@ -75,78 +75,125 @@ After the project has been created, you will need to edit the `cat_sex_database\
     production:
       adapter: postgresql
       encoding: unicode
-      database: cat_sex_database_production
+      database: foo_bar_database_production
       pool: 5
-      username: ENV['CAT_SEX_DATABASE_USER']
-      password: ENV['CAT_SEX_DATABASE_PSWD']
-      host: ENV['CAT_SEX_DATABASE_HOST']
+      username: ENV['FOO_BAR_DATABASE_USER']
+      password: ENV['FOO_BAR_DATABASE_PSWD']
+      host: ENV['FOO_BAR_DATABASE_HOST']
+
+####Changing the current environment
+
+Any command you run will default to the `development` environment, but you can specify which environment you want to run using RAILS_ENV:
+
+    $ rake mule:migrate db=foo_bar_database RAILS_ENV=production
 
 ####Enable migrations on an existing database
 
 Sometimes you will need to create a database project for an existing database. To do so, follow the instructions above and then run the following command: 
 
-    $ rake mule:configure_existing_database db=cat_sex_database
+    $ rake mule:configure_existing_database db=foo_bar_database
 
 This will add an initial database version to your database with the contents of a schema dump, so that it can be recreated in other environments.
 
-#### Create a migration:
+####Create a migration:
 
-    rake mule:new_migration db=cat_sex_database name=new_cat_sex_migration
+    $ rake mule:new_migration db=foo_bar_database name=foo_bar_migration
 
-#### Migrate database to latest version:
+A migration represents a single change you want to make in the database, such as adding a table, adding a column, creating an index, dropping a column, dropping a database, dropping and index, defining a stored procedure...and so on. 
 
-    rake mule:migrate db=cat_sex_database
+A migration has both an UP and DOWN implementation: UP to make the change and DOWN to undo it. When you call the command above, by default Mule will create two SQL scripts in the `foo_bar_database/db/sql` directory. The format of the filenames are:
 
-#### Migrate database to specific version (up or down depending on current version):
+    <timestamp>_<name_of_migration>_up.sql
+    <timestamp>_<name_of_migration>_down.sql
 
-    rake mule:migrate db=cat_sex_database VERSION=<specific_version_number>
+    example: 20130128185251_foo_bar_migration_up.sql
+    example: 20130128185251_foo_bar_migration_down.sql
 
-#### Run a specific migration:
+These files are plain old SQL files and that's all they should contain.
 
-    rake mule:migrate:up db=cat_sex_database VERSION=<specific_version_number>
+Using Ruby
 
-or
+If you want to use the ActiveRecord domain-specific language to write your migrations instead of SQL, pass into the command the flag `type=ruby' so that the SQL scripts are not generated and then edit both the up and down methods of the file created in the `foo_bar_database/db/migrate' directory. The format of the filename is:
 
-    rake mule:migrate:down db=cat_sex_database VERSION=<specific_version_number>
+    <timestamp>_<name_of_migration>.rb
 
-#### Rollback database to previous version:
+    example: 20130128185251_foo_bar_migration.rb
 
-    rake mule:rollback db=cat_sex_database
+####Migrate database to latest version:
 
-#### Rollback database a certain number of steps:
+    $ rake mule:migrate db=foo_bar_database
 
-    rake mule:rollback db=cat_sex_database STEP=<how_many_rollbacks>
+This command will run any migrations that have not been run on the database.
 
-#### Seed database:
+####Migrate database to specific version (up or down depending on current version):
 
-    rake mule:seed db=cat_sex_database
+    $ rake mule:migrate db=foo_bar_database VERSION=<specific_version_number>
 
-#### Retrieve database version:
+####Run a single, specific migration:
 
-    rake mule:version db=cat_sex_database
+    $ rake mule:migrate:up db=foo_bar_database VERSION=<specific_version_number>
 
-#### Create database:
+    or
 
-    rake mule:create db=cat_sex_database
+    $ rake mule:migrate:down db=foo_bar_database VERSION=<specific_version_number>
 
-#### Drop database:
+####Rollback database to the previous version:
 
-    rake mule:drop db=cat_sex_database
+    $ rake mule:rollback db=foo_bar_database
 
-#### Reset database:
+####Rollback database a certain number of steps:
 
-    rake mule:reset db=cat_sex_database
+    $ rake mule:rollback db=foo_bar_database STEP=<how_many_steps>
 
-#### Dump schema:
+####Seed database:
 
-    rake mule:structure:dump db=cat_sex_database
+    $ rake mule:seed db=foo_bar_database
 
-#### Load schema:
+####Retrieve database version:
 
-    rake mule:structure:load db=cat_sex_database
+    $ rake mule:version db=foo_bar_database
 
-### Notes for production:
+####Create database:
 
-Mule has a safeguard system in place for any `config.yml` environment that contains the word 'production'. If you run any command that is typically destructive in nature (i.e. data could be lost), then it is required that you pass in an additional confirmation flag to the command...
+    $ rake mule:create db=foo_bar_database
 
-How to pass in environment variables...
+####Drop database:
+
+    $ rake mule:drop db=foo_bar_database
+
+####Reset database:
+
+    $ rake mule:reset db=foo_bar_database
+
+####Dump schema:
+
+    $ rake mule:structure:dump db=foo_bar_database
+
+####Load schema:
+
+    $ rake mule:structure:load db=foo_bar_database
+
+###Notes for production:
+
+####Database environment variables
+
+The `foo_bar_database/db/config.yml` file can contain environment variable accessors, in the format: ENV['FOO_BAR_VARIABLE']. 
+
+    production:
+      adapter: postgresql
+      encoding: unicode
+      database: foo_bar_database_production
+      pool: 5
+      username: ENV['FOO_BAR_USER']
+      password: ENV['FOO_BAR_PSWD']
+      host: ENV['FOO_BAR_HOST']
+
+You can use this for production configurations to pass in database configuration during execution of the command:
+
+    $ rake mule:migrate db=foo_bar_database RAILS_ENV=production FOO_BAR_USER=<prod_user> FOO_BAR_PSWD=<prod_pswd> FOO_BAR_HOST=<prod_host>
+
+####Safeguard for destructive commands
+
+Mule has a safeguard system in place for any `foo_bar_database/db/config.yml` environment that contains the word 'production'. If you run any command that is typically destructive in nature (i.e. data could be lost), then it is required that you pass in an additional confirm argument to the command. The confirm argument must contain the database project name: 
+
+    $ rake mule:rollback confirm=foo_bar_database db=foo_bar_database RAILS_ENV=production
