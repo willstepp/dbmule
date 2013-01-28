@@ -1,4 +1,3 @@
-
 require 'rubygems'
 require 'bundler/setup'
 
@@ -17,16 +16,18 @@ namespace :specs do
 
   desc "only specs that don't use database connection"
   RSpec::Core::RakeTask.new "nodb" do |t|
-    t.pattern = "spec/standalone_migrations/**/*_spec.rb"
   end
 
   desc "run alls sepcs including those which uses database"
   task :all => [:default, :nodb]
 end
 
-# rake install -> install gem locally (for tests)
-# rake release -> push to github and release to gemcutter
-# rake version:bump:patch -> increase version and add a git-tag
+namespace :mule do
+  task :init do
+    puts 'hi from mule init!'
+  end
+end
+
 begin
   require 'jeweler'
 rescue LoadError => e
