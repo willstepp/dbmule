@@ -27,11 +27,11 @@ module StandaloneMigrations
         updated_nmf = inject_sql_execution_code_into_migration(nmf, filename, sql_scripts)
         File.open(new_migration_file, 'w') {|f| f.write(updated_nmf)}
       else
+        puts ""
         puts "Mule did not detect a new migration file - SQL script generation cannot proceed"
+        puts ""
       end
     end
-
-    private
 
     def self.get_new_migration_file(old_files, new_files)
       nf = []
@@ -43,17 +43,21 @@ module StandaloneMigrations
       nf.count > 0 ? nf.first : nil
     end
 
+    private
+
     def self.create_sql_scripts(db, filename)
       sql_path = Rails.root.join(db, "db/sql")
       up_script = File.join(sql_path, "#{filename}_up.sql")
       down_script = File.join(sql_path, "#{filename}_down.sql")
 
       File.open(up_script, 'w') {|f| f.write("--SQL up code for migration (#{filename}) goes here")}
+      puts ""
       puts "Mule created: #{filename}_up.sql"
       File.open(down_script, 'w') {|f| f.write("--SQL down code for migration (#{filename}) goes here")}
       puts "Mule created: #{filename}_down.sql"
 
       puts "Mule put the scripts here: #{File.join(db, "db/sql")}"
+      puts ""
 
       { :up => up_script, :down => down_script }
     end

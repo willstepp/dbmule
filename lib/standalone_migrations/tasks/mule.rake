@@ -41,8 +41,10 @@ eos
 
     db = args[:db] || ENV['db']
     unless db
+      puts ""
       puts "Error: must provide name of database to generate project for."
       puts "For example: rake #{t.name} db=my_cool_database"
+      puts ""
       abort
     end
 
@@ -50,6 +52,7 @@ eos
 
     exists = File.exists? project_dir
     if !exists
+      puts ""
       puts "Mule started creating database project for #{db}"
 
       FileUtils.mkdir(project_dir)
@@ -68,13 +71,58 @@ eos
       puts "Mule created file: #{File.join(db, "db", "config.yml")}"
 
       puts "Mule finished creating database project for #{db}"
+      puts ""
     else
+      puts ""
       puts "This database project already exists. Please choose another name."
+      puts ""
       abort
     end
   end
 
   task :enable_migrations_on_existing_database, :db do |t, args|
+    db = args[:db] || ENV['db']
+
+    unless db
+      puts ""
+      puts "Error: must provide name of database"
+      puts "For example: rake #{current_task.name} db=my_cool_database"
+      puts ""
+      abort
+    end
+
+    puts ""
+    puts "Mule enabling migrations on existing database"
+
+    #create backup file of existing database schema
+    Rake::Task["mule:structure:dump"].invoke(db)
+    schema = Rails.root.join(db, "db/structure_#{ENV['RAILS_ENV']}.sql")
+
+    #run mule:new_migration init_from_existing_schema
+    migration_path = Rails.root.join(db, "db/migrate")
+    old_files = Dir.glob(File.join(migration_path, "*"))
+    Rake::Task["mule:new_migration"].invoke("init_from_existing_db", db)
+    new_files = Dir.glob(File.join(migration_path, "*"))
+
+    new_migration_file = StandaloneMigrations::Generator.get_new_migration_file(old_files, new_files)
+    filename = File.basename(new_migration_file, ".rb")
+
+    #run mule:migrate to insert versioning table into database
+    Rake::Task["mule:migrate"].invoke(db)
+
+    #copy schema dump into generated sql up file
+      #read in schema from schema
+      #write schema into generated up sql script
+    s = File.open(schema, "r") {|f| f.read}
+    File.open(Rails.root.join(db, "db/sql/#{filename}_up.sql"), 'w') {|f| f.write(s)}
+
+    #create drop database <db_name> and recreate to down call
+      #write schema into generated up sql script
+    File.open(Rails.root.join(db, "db/sql/#{filename}_down.sql"), 'w') {|f| f.write("drop database #{db} cascade;\ncreate database #{db};")}
+
+    puts ""
+    puts "Mule finished"
+    puts ""
   end
 
   task :new_migration, :name, :db, :options do |t, args|
@@ -83,14 +131,18 @@ eos
     options = args[:options] || ENV['options']
 
     unless db
+      puts ""
       puts "Error: must provide name of database to generate migration for."
       puts "For example: rake #{t.name} db=my_cool_database name=add_field_to_form"
+      puts ""
       abort
     end
     
     unless name
+      puts ""
       puts "Error: must provide name of migration to generate."
       puts "For example: rake #{t.name} name=add_field_to_form"
+      puts ""
       abort
     end
 
@@ -199,8 +251,10 @@ end
 
 def invoke_task_for(db, current_task, task_to_invoke)
   unless db
+    puts ""
     puts "Error: must provide name of database"
     puts "For example: rake #{current_task.name} db=my_cool_database"
+    puts ""
     abort
   end
 
