@@ -22,12 +22,6 @@ namespace :specs do
   task :all => [:default, :nodb]
 end
 
-namespace :mule do
-  task :init do
-    puts 'hi from mule init!'
-  end
-end
-
 begin
   require 'jeweler'
 rescue LoadError => e
