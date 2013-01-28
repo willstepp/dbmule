@@ -40,6 +40,18 @@ production:
 eos
     end
 
+    def seeds_template(db)
+<<-eos
+#run all sql scripts from #{db}/db/seeds
+connection = ActiveRecord::Base.connection();
+sql_seed_files = Dir.glob(Rails.root.join("#{db}/db/seeds", "*.sql"))
+sql_seed_files.each do |ssf|
+  sql = File.open(ssf, "r") {|f| f.read}
+  connection.execute(sql)
+end
+eos
+    end
+
     db = args[:db] || ENV['db']
     unless db
       puts ""
@@ -67,9 +79,15 @@ eos
       sql_dir = File.join(db_dir, "sql")
       FileUtils.mkdir(sql_dir)
       puts "Mule created directory: #{File.join(db, "db", "sql")}"
+      seeds_dir = File.join(db_dir, "seeds")
+      FileUtils.mkdir(seeds_dir)
+      puts "Mule created directory: #{File.join(db, "db", "seeds")}"
       config_file = File.join(db_dir, "config.yml")
       File.open(config_file, 'w') {|f| f.write(config_template(db))}
       puts "Mule created file: #{File.join(db, "db", "config.yml")}"
+      seeds_file = File.join(db_dir, "seeds.rb")
+      File.open(seeds_file, 'w') {|f| f.write(seeds_template(db))}
+      puts "Mule created file: #{File.join(db, "db", "seeds.rb")}"
 
       puts "Mule finished creating database project for #{db}"
       puts ""
