@@ -2,50 +2,92 @@
 
 ###What is it?
 
-Mule is a database migration tool based on a stand-alone version of [Rails Migrations](http://guides.rubyonrails.org/migrations.html). By default, Mule uses SQL scripts instead of Migrations DSL, so no Ruby code is required. It supports multi-database environments, including support for existing databases.
+Mule is a database migration tool based on a stand-alone version of [Rails Migrations](http://guides.rubyonrails.org/migrations.html). By default, Mule uses SQL scripts instead of Migrations DSL, so no Ruby coding is required. It supports multi-database environments, including support for existing databases.
 
-You interact with Mule via a series of [Rake](http://rake.rubyforge.org/) commands which map nearly 1:1 to Rails Migration commands, so if you are familiar with them you will be right at home, but if not don't worry - it's really easy.
+You interact with Mule via a series of [Rake](http://rake.rubyforge.org/) commands which map almost 1:1 to Rails Migrations commands, so if you are familiar with them you will be right at home, but if not, don't worry -- it's really easy.
 
-These commands give you a simple, but powerful toolset which you can use to manage database migrations across both development and production environments.
+These commands give you a simple, yet powerful toolset allowing you to manage database migrations across both development and production environments.
 
 ###How do I use it?
 
+####Prerequisites
+
+Before using Mule, you must set up a Ruby environment on your machine. Follow the instructions at the links for [Ruby](http://www.ruby-lang.org/en/downloads/) and [RubyGems](https://rubygems.org/pages/download).
+
+Once you have both Ruby and RubyGems installed, you should install the Ruby database driver for whatever database you are using, for example:
+
+Postgres
+
+    $ gem install pg
+
+
 ####Installation
 
-Install [Ruby](http://www.ruby-lang.org/en/downloads/), [RubyGems](https://rubygems.org/pages/download), and a ruby-database driver (e.g. `gem install pg`) then:
+Once your Ruby environment is set up, installing Mule is no big deal:
 
     $ gem install dbmule
 
-Create a `Rakefile` in your project's base directory containing the following lines:
+Next, create a `Rakefile` in your project's base directory containing the following lines:
 
 ```ruby
 require 'mule_migrations'
 MuleMigrations::Tasks.load_tasks
 ```
 
-Add database configuration to `db/config.yml` in your projects base directory e.g.:
+Installation is complete, you are now ready to begin using Mule.
+
+####Create a database project
+
+To begin, create a new database project. A database project represents one database in your system. You can do this with one command:
+
+    $ rake mule:new_project db=my_test_database
+
+Mule will then create a directory in your project's base directory called whatever you put in for `my_test_database` above. Inside it will create the basic Mule project structure, which looks like this:
+
+    my_test_database/
+      db/
+        migrate/
+        sql/
+        seeds/
+        config.yml
+        seeds.rb
+
+After the project has been created, you will need to edit the `my_test_database\db\config.yml` file and enter the correct database connection information for each environment section you require (development, test, production below). You can create an arbitary number of environments, with any names you like:
 
     development:
-      adapter: sqlite3
-      database: db/development.sqlite3
+      adapter: postgresql
+      encoding: unicode
+      database: my_test_database_development
       pool: 5
-      timeout: 5000
+      username:
+      password:
+      host: localhost
+
+    test:
+      adapter: postgresql
+      encoding: unicode
+      database: my_test_database_test
+      pool: 5
+      username:
+      password:
+      host: localhost
 
     production:
-      adapter: mysql
-      encoding: utf8
-      reconnect: false
-      database: somedatabase_dev
+      adapter: postgresql
+      encoding: unicode
+      database: my_test_database_production
       pool: 5
-      username: root
-      password:
-      socket: /var/run/mysqld/mysqld.sock
+      username: ENV['MY_TEST_DATABASE_USER']
+      password: ENV['MY_TEST_DATABASE_PSWD']
+      host: ENV['MY_TEST_DATABASE_HOST']
 
-    test: &test
-      adapter: sqlite3
-      database: db/test.sqlite3
-      pool: 5
-      timeout: 5000
+####Enable migrations on an existing database
+
+Sometimes you will need to create a database project for an existing database. To do so, follow the instructions above and then run the following command: 
+
+    $ rake mule:configure_existing_database db=my_test_database
+
+This will add an initial database version to your database with the contents of a schema dump, so that it can be recreated in other environments.
 
 ### To create a new database migration:
 
