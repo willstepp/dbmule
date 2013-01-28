@@ -1,15 +1,13 @@
-Rails migrations in non-Rails (and non Ruby) projects.
+## Mule
 
-WHAT'S NEW
-==========
-In the 2.x release we have moved to using Rails 3 migrations instead of maintaining our own migration related code. Just about anything you can do with Rails 3 migrations you can now do with [Standalone Migrations](https://github.com/thuss/standalone-migrations) too! This removed 95% of the code we have to maintain. Big thanks to [Ricardo Valeriano](http://ricardovaleriano.com/) and [Michael Grosser](http://pragmatig.wordpress.com) for undertaking this major rewrite!
+###What is it?
 
-CONTRIBUTE
-==========
-[Standalone Migrations](https://github.com/thuss/standalone-migrations) relies on the contributions of the open-source community! To submit a fix or an enhancement fork the repository, checkout the *develop* branch, make your changes, add your name to the *Contributors* section in README.markdown, and send us a pull request! If you're active and do good work we'll add you as a collaborator!
+Mule is a database migration tool (Ruby gem) based upon a stand-alone version of [Rails Migrations](http://guides.rubyonrails.org/migrations.html). It is customized to be used in environments with multiple existing databases and to use SQL scripts by default instead of Migrations DSL.
 
-USAGE
-=====
+You interact with Mule via a series of [Rake](http://rake.rubyforge.org/) commands which map almost 1:1 with Rails Migration commands, so if you are familiar with them you will be right at home. These commands give you a simple, but powerful toolset to manage database migrations across both development and production environments.
+
+###How do I use it?
+
 Install Ruby, RubyGems and a ruby-database driver (e.g. `gem install mysql`) then:
 
     $ gem install standalone_migrations
@@ -178,23 +176,3 @@ ActiveRecord::Base.schema_format = :sql
 
 You should see a `db/structure.sql` file the next time you run a
 migration.
-
-Contributors
-============
- - [Todd Huss](http://gabrito.com/)
- - [Michael Grosser](http://pragmatig.wordpress.com)
- - [Ricardo Valeriano](http://ricardovaleriano.com/)
- - [Two Bit Labs](http://twobitlabs.com/)
- - [ClassMonkeys](http://www.classmonkeys.com/) 
- - [Windandtides](http://windandtides.com/)
- - [Eric Lindvall](http://bitmonkey.net)
- - [Steve Hodgkiss](http://stevehodgkiss.com/)
- - [Rich Meyers](https://github.com/richmeyers)
- - [Wes Bailey](http://exposinggotchas.blogspot.com/)
- - [Robert J. Berger](http://blog.ibd.com/)
- - [Federico Builes](http://mheroin.com/)
- - [Gazler](http://blog.gazler.com/)
- - [Yuu Yamashita](https://github.com/yyuu)
- - [Koen Punt](http://www.koen.pt/)
-
-This work is originally based on [Lincoln Stoll's blog post](http://lstoll.net/2008/04/stand-alone-activerecord-migrations/) and [David Welton's post](http://journal.dedasys.com/2007/01/28/using-migrations-outside-of-rails).
