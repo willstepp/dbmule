@@ -146,9 +146,13 @@ eos
     puts ""
   end
 
-  task :new_migration, :name, :db, :options do |t, args|
+  task :new_migration, :name, :db, :type, :options do |t, args|
     name = args[:name] || ENV['name']
     db = args[:db] || ENV['db']
+
+    type = args[:type] || ENV['type']
+    if type.nil? then type = "sql" end
+
     options = args[:options] || ENV['options']
 
     unless db
@@ -170,9 +174,9 @@ eos
     set_rails_config_for(db)
     
     if options
-      StandaloneMigrations::Generator.migration name, db, options.gsub('/', ' ')
+      StandaloneMigrations::Generator.migration name, db, type, options.gsub('/', ' ')
     else
-      StandaloneMigrations::Generator.migration name, db
+      StandaloneMigrations::Generator.migration name, db, type
     end
   end
 

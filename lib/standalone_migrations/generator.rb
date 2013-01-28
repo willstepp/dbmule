@@ -4,7 +4,7 @@ require "rails/generators"
 module StandaloneMigrations
 
   class Generator
-    def self.migration(name, db, options="")
+    def self.migration(name, db, type, options="")
       generator_params = [name] + options.split(" ")
 
       migration_path = Rails.root.join(db, "db/migrate")
@@ -17,7 +17,7 @@ module StandaloneMigrations
 
       new_migration_file = get_new_migration_file(old_files, new_files)
 
-      if new_migration_file
+      if new_migration_file and type == 'sql'
         filename = File.basename(new_migration_file, ".rb")
 
         sql_scripts = create_sql_scripts(db, filename)
@@ -26,10 +26,6 @@ module StandaloneMigrations
         nmf = File.open(new_migration_file, "r") {|f| f.read}
         updated_nmf = inject_sql_execution_code_into_migration(nmf, filename, sql_scripts)
         File.open(new_migration_file, 'w') {|f| f.write(updated_nmf)}
-      else
-        puts ""
-        puts "Mule did not detect a new migration file - SQL script generation cannot proceed"
-        puts ""
       end
     end
 
