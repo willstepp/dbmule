@@ -38,7 +38,7 @@ else
     gem.name = 'dbmule'
     gem.summary = "Mule is a database migration tool based upon a stand-alone version of Rails Migrations. It is customized to be used in environments with multiple existing databases and to use SQL scripts by default instead of Migrations DSL."
     gem.email = "willstepp@gmail.com"
-    gem.homepage = "http://github.com/willstepp/db-mule"
+    gem.homepage = "http://github.com/willstepp/dbmule"
     gem.authors = ["Daniel Stepp"]
   end
 

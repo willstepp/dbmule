@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     "README.markdown",
     "Rakefile",
     "VERSION",
+    "dbmule.gemspec",
     "example/.gitignore",
     "example/Rakefile",
     "example/db/config.yml",
@@ -38,13 +39,12 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb",
     "spec/standalone_migrations/configurator_spec.rb",
     "spec/standalone_migrations_spec.rb",
-    "standalone_migrations.gemspec",
     "vendor/migration_helpers/MIT-LICENSE",
     "vendor/migration_helpers/README.markdown",
     "vendor/migration_helpers/init.rb",
     "vendor/migration_helpers/lib/migration_helper.rb"
   ]
-  s.homepage = "http://github.com/willstepp/db-mule"
+  s.homepage = "http://github.com/willstepp/dbmule"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
   s.summary = "Mule is a database migration tool based upon a stand-alone version of Rails Migrations. It is customized to be used in environments with multiple existing databases and to use SQL scripts by default instead of Migrations DSL."
