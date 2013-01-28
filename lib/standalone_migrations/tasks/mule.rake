@@ -94,10 +94,6 @@ eos
     puts ""
     puts "Mule enabling migrations on existing database"
 
-    #create backup file of existing database schema
-    Rake::Task["mule:structure:dump"].invoke(db)
-    schema = Rails.root.join(db, "db/structure_#{ENV['RAILS_ENV']}.sql")
-
     #run mule:new_migration init_from_existing_schema
     migration_path = Rails.root.join(db, "db/migrate")
     old_files = Dir.glob(File.join(migration_path, "*"))
@@ -109,6 +105,10 @@ eos
 
     #run mule:migrate to insert versioning table into database
     Rake::Task["mule:migrate"].invoke(db)
+
+    #create backup file of existing database schema
+    Rake::Task["mule:structure:dump"].invoke(db)
+    schema = Rails.root.join(db, "db/structure_#{ENV['RAILS_ENV']}.sql")
 
     #copy schema dump into generated sql up file
       #read in schema from schema
