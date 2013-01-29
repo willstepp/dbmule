@@ -112,7 +112,7 @@ These files are plain old SQL files and that's all they should contain.
 
 Using Ruby
 
-If you want to use the ActiveRecord domain-specific language to write your migrations instead of SQL, pass into the command the flag `type=ruby' so that the SQL scripts are not generated and then edit both the up and down methods of the file created in the `foo_bar_database/db/migrate' directory. The format of the filename is:
+If you want to use the ActiveRecord domain-specific language to write your migrations instead of SQL, pass into the command the flag `type=ruby` so that the SQL scripts are not generated and then edit both the up and down methods of the file created in the `foo_bar_database/db/migrate` directory. The format of the filename is:
 
     <timestamp>_<name_of_migration>.rb
 
