@@ -108,7 +108,22 @@ A migration has both an UP and DOWN implementation: UP to make the change and DO
     example: 20130128185251_foo_bar_migration_up.sql
     example: 20130128185251_foo_bar_migration_down.sql
 
-These files are plain old SQL files and that's all they should contain.
+These files are plain old SQL files and that's all they should contain:
+
+```sql
+--example of 20130128185251_foo_bar_migration_up.sql
+CREATE TABLE foo_bars(
+  id serial NOT NULL,
+  foo character varying (255) NOT NULL,
+  bar integer NOT NULL
+);
+```
+
+```sql
+--example of 20130128185251_foo_bar_migration_down.sql
+DROP TABLE foo_bars;
+```
+
 
 Using Ruby
 
@@ -117,6 +132,22 @@ If you want to use the ActiveRecord domain-specific language to write your migra
     <timestamp>_<name_of_migration>.rb
 
     example: 20130128185251_foo_bar_migration.rb
+
+```ruby
+#example of 20130128185251_foo_bar_migration.rb
+class FooBarMigration < ActiveRecord::Migration
+  def up
+    create_table :foo_bars do |t|
+      t.string :foo
+      t.bar :integer
+    end
+  end
+ 
+  def down
+    drop_table :foo_bars
+  end
+end
+```
 
 ####Migrate database to latest version:
 
