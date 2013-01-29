@@ -88,7 +88,7 @@ Any command you run will default to the `development` environment, but you can s
 
 ####Enable migrations on an existing database
 
-Sometimes you will need to create a database project for an existing database. To do so, follow the instructions above and then run the following command: 
+Sometimes you will need to create a database project for an existing database. To do so, follow the instructions above for creating a project and then run the following command: 
 
     $ rake mule:configure_existing_database db=foo_bar_database
 
