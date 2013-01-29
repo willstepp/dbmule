@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "dbmule"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Stepp"]
-  s.date = "2013-01-28"
+  s.date = "2013-01-29"
   s.email = "willstepp@gmail.com"
   s.extra_rdoc_files = [
     "README.markdown"
@@ -39,7 +39,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/willstepp/dbmule"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.25"
-  s.summary = "Mule is a database migration tool based upon a stand-alone version of Rails Migrations. It is customized to be used in environments with multiple existing databases and to use SQL scripts by default instead of Migrations DSL."
+  s.summary = "Mule is a database migration tool based on a stand-alone version of Rails Migrations. By default, Mule uses SQL scripts instead of Migrations DSL, so no Ruby coding is required. It supports multi-database environments, including support for existing databases."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
