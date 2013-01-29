@@ -98,7 +98,7 @@ This will add an initial database version to your database with the contents of 
 
     $ rake mule:new_migration db=foo_bar_database name=foo_bar_migration
 
-A migration represents a single change you want to make in the database, such as adding a table, adding a column, creating an index, dropping a column, dropping a database, dropping and index, defining a stored procedure...and so on. 
+A migration represents a single change you want to make in the database, such as adding a table, adding a column, creating an index, dropping a column, dropping a database, dropping an index, defining a stored procedure...and so on. 
 
 A migration has both an UP and DOWN implementation: UP to make the change and DOWN to undo it. When you call the command above, by default Mule will create two SQL scripts in the `foo_bar_database/db/sql` directory. The format of the filenames are:
 
@@ -178,7 +178,7 @@ You can create arbitrary SQL files in the `foo_bar_database/db/seeds` directory 
 
 ####Database environment variables
 
-The `foo_bar_database/db/config.yml` file can contain environment variable accessors, in the format: ENV['FOO_BAR_VARIABLE']. 
+The `foo_bar_database/db/config.yml` file can contain environment variable accessors:
 
     production:
       adapter: postgresql
@@ -189,7 +189,7 @@ The `foo_bar_database/db/config.yml` file can contain environment variable acces
       password: ENV['FOO_BAR_PSWD']
       host: ENV['FOO_BAR_HOST']
 
-You can use this for production configurations to pass in database configuration during execution of the command:
+You can use this in production configurations to pass in database configuration during execution of the command:
 
     $ rake mule:migrate db=foo_bar_database RAILS_ENV=production FOO_BAR_USER=<prod_user> FOO_BAR_PSWD=<prod_pswd> FOO_BAR_HOST=<prod_host>
 
