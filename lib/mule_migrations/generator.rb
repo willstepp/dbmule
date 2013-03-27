@@ -55,7 +55,7 @@ module MuleMigrations
       puts "Mule put the scripts here: #{File.join(db, "db/sql")}"
       puts ""
 
-      { :up => up_script, :down => down_script }
+      { :up => "#{filename}_up.sql", :down => "#{filename}_down.sql" }
     end
 
     def self.inject_sql_execution_code_into_migration(nmf, filename, sql_scripts)
@@ -67,13 +67,14 @@ module MuleMigrations
 
 <<-eos
 class #{classname} < ActiveRecord::Migration
+  @@curr_path = File.expand_path(File.dirname(__FILE__))
   def up
-    sql = File.open('#{sql_scripts[:up]}', 'r') {|f| f.read}
+    sql = File.open(File.join(@@curr_path, '../sql/#{sql_scripts[:up]}'), 'r') {|f| f.read}
     execute(sql)
   end
 
   def down
-    sql = File.open('#{sql_scripts[:down]}', 'r') {|f| f.read}
+    sql = File.open(File.join(@@curr_path, '../sql/#{sql_scripts[:down]}'), 'r') {|f| f.read}
     execute(sql)
   end
 end
